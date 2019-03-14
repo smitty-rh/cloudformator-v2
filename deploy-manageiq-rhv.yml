@@ -37,7 +37,7 @@
         interface: virtio
         size: 100GiB
         format: cow
-        image_path: "/tmp/{{ version }}.qc2"
+        image_path: "{{ version }}.qc2"
         storage_domain: data
 
     - name: Cleaning up file
