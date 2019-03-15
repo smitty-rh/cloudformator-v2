@@ -22,7 +22,7 @@
 
     - name: Adding DB disk to appliance
       vmware_guest_disk:
-        hostname: dev-vc67.cloudforms.lab.eng.rdu2.redhat.com
+        hostname: '{{ myhost }}'
         username: '{{ redhatID }}'
         password: '{{ redhatPass }}'
         datacenter: dev-vc67-DC
