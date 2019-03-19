@@ -2,28 +2,11 @@
 - hosts: localhost
 
   tasks:
-#    - name: Getting file
-#      shell: "cp /builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2 {{ version }}.qc2"
-#    - name: Generating symmlink
-#      file:
-#        src: "/builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2"
-#        dest: "/tmp/{{ version }}.qc2"
-#        state: link
-
     - name: Locating File
       find:
         paths: "/builds/cfme/{{ ystream }}/{{ version }}/"
         patterns: "cfme-rhevm*.qcow2"
-        use_regex: true
       register: qcow2_image
-
-#    - name: Ansible remove file wildcard
-#      file:
-#        src: "{{ item.path }}"
-#        dest: "
-#        state: link
-#      with_items: "{{ qcow2_image.files }}"
-
 
     - name: Log into RHV
       ovirt_auth:
@@ -72,9 +55,6 @@
         size: 100GiB
         storage_domain: data
 
-#    - name: Cleaning up file
-#      shell: "rm -f {{ version }}.qc2"
-    
     - name: Powering on Appliance
       ovirt_vm:
         auth: "{{ ovirt_auth }}"
