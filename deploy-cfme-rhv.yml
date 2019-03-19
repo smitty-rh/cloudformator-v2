@@ -2,8 +2,13 @@
 - hosts: localhost
 
   tasks:
-    - name: Getting file
-      shell: "cp /builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2 {{ version }}.qc2"
+#    - name: Getting file
+#      shell: "cp /builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2 {{ version }}.qc2"
+    - name: Generating symmlink
+      file:
+        src: "/builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2"
+        dest: "/tmp/{{ version }}.qc2"
+        state: link
 
     - name: Log into RHV
       ovirt_auth:
@@ -37,7 +42,7 @@
         interface: virtio
         size: 40GiB
         format: cow
-        image_path: "{{ version }}.qc2"
+        image_path: "/tmp/{{ version }}.qc2"
         storage_domain: data
         bootable: True
 
@@ -51,8 +56,8 @@
         size: 100GiB
         storage_domain: data
 
-    - name: Cleaning up file
-      shell: "rm -f {{ version }}.qc2"
+#    - name: Cleaning up file
+#      shell: "rm -f {{ version }}.qc2"
     
     - name: Powering on Appliance
       ovirt_vm:
