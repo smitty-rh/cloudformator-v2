@@ -2,8 +2,11 @@
 - hosts: localhost
 
   tasks:
-    - name: Getting file
-      shell: "cp /builds/cfme/{{ ystream }}/{{ version }}/cfme-vsphere-{{ version }}*.vsphere.ova {{ version }}.ova"
+    - name: Locating file
+      find:
+        paths: "/builds/cfme/{{ ystream }}/{{ version }}/"
+        patterns: "cfme-vsphere-*.vsphere.ova"
+      register: ova_image
 
     - name: Deploying OVA File
       vmware_deploy_ovf:
@@ -13,11 +16,12 @@
         cluster: dev-vc67-cluster
         datacenter: dev-vc67-DC
         datastore: NFS Share
-        ovf: "{{ version }}.ova"
+        ovf: "{{ item.path }}"
         allow_duplicates: no
         validate_certs: no
         name: '{{ newvm }}'
         power_on: no
+      with_items: "{{ ova_image.files }}"
       delegate_to: localhost
 
     - name: Adding DB disk to appliance
