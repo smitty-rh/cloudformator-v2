@@ -2,8 +2,11 @@
 - hosts: localhost
 
   tasks:
-    - name: Getting file
-      shell: "cp /builds/manageiq/{{ release }}/{{ version }}/manageiq-ovirt*.qc2 {{ version }}.qc2"
+    - name: Locating File
+      find: 
+        paths: "/builds/manageiq/{{ release }}/{{ version }}/"
+        patterns: "manageiq-ovirt*.qc2"
+      register: qcow2_image
 
     - name: Log into RHV
       ovirt_auth:
@@ -37,11 +40,9 @@
         interface: virtio
         size: 100GiB
         format: cow
-        image_path: "{{ version }}.qc2"
+        image_path: "{{ item.path }}"
         storage_domain: data
-
-    - name: Cleaning up file
-      shell: "rm -f {{ version }}.qc2"
+      with_items: "{{ qcow2_image.files }}"
     
     - name: Powering on Appliance
       ovirt_vm:
