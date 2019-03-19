@@ -14,7 +14,7 @@
       find:
         paths: "/builds/cfme/{{ ystream }}/{{ version }}/"
         patterns: "cfme-rhevm*.qcow2"
-        use:regex: true
+        use_regex: true
       register: qcow2_image
 
 #    - name: Ansible remove file wildcard
