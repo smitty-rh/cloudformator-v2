@@ -4,11 +4,26 @@
   tasks:
 #    - name: Getting file
 #      shell: "cp /builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2 {{ version }}.qc2"
-    - name: Generating symmlink
-      file:
-        src: "/builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2"
-        dest: "/tmp/{{ version }}.qc2"
-        state: link
+#    - name: Generating symmlink
+#      file:
+#        src: "/builds/cfme/{{ ystream }}/{{ version }}/cfme-rhevm*.qcow2"
+#        dest: "/tmp/{{ version }}.qc2"
+#        state: link
+
+    - name: Locating File
+      find:
+        paths: "/builds/cfme/{{ ystream }}/{{ version }}/"
+        patterns: "cfme-rhevm*.qcow2"
+        use:regex: true
+      register: qcow2_image
+
+#    - name: Ansible remove file wildcard
+#      file:
+#        src: "{{ item.path }}"
+#        dest: "
+#        state: link
+#      with_items: "{{ qcow2_image.files }}"
+
 
     - name: Log into RHV
       ovirt_auth:
@@ -42,9 +57,10 @@
         interface: virtio
         size: 40GiB
         format: cow
-        image_path: "/tmp/{{ version }}.qc2"
+        image_path: "{{ item.path }}"
         storage_domain: data
         bootable: True
+      with_items: "{{ qcow2_image.files }}"
 
     - name: Adding DB Disk
       ovirt_disk:
