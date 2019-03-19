@@ -1,10 +1,13 @@
 ---
 - hosts: localhost
-#  gather_facts: False
-
   tasks:
     - name: Getting file
       shell: "cp /builds/manageiq/{{ release }}/{{ version }}/manageiq-vsphere*.ova {{ version }}.ova"
+    - name: Locating File
+      find:
+        paths: "/builds/manageiq/{{ release }}/{{ version }}/"
+        patterns: "manageiq-vsphere*.ova"
+      register: ova_image
 
     - name: Deploying OVA File
       vmware_deploy_ovf:
@@ -14,11 +17,12 @@
         cluster: dev-vc67-cluster
         datacenter: dev-vc67-DC
         datastore: NFS Share
-        ovf: "{{ version }}.ova"
+        ovf: "{{ item.path }}"
         allow_duplicates: no
         validate_certs: no
         name: '{{ newvm }}'
         power_on: no
+      with_items: "{{ ova_image.files }}"
       delegate_to: localhost
 
     - name: Powering on appliance
