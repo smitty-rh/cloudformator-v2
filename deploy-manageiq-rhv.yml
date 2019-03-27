@@ -69,7 +69,7 @@
         msg: "You should now be able to access your appliance via https://{{ IPInfo.nic.reported_devices[0].ips[0].address }} Please allow roughly 15 minutes for the service to fully come online."
 
     - name: Gathering Bigger Facts
-      ovirt_vms:
+      ovirt_vm_facts:
         auth: "{{ ovirt_auth }}"
-        vm: "{{ newvm }}"
+        pattern: name="{{ newvm }}"
       register: VMInfo
