@@ -33,7 +33,7 @@
         validate_certs: no
         name: '{{ newvm }}'
         hardware:
-        -  memory_mb: 12288
+          memory_mb: 12288
         state: poweredon
         wait_for_ip_address: True
       delegate_to: localhost
