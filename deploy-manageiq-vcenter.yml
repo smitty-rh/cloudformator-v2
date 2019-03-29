@@ -24,6 +24,17 @@
         power_on: no
       with_items: "{{ ova_image.files }}"
       delegate_to: localhost
+    
+    - name: Adjusting memory size
+      vmware_guest:
+        hostname: '{{ myhost }}'
+        username: '{{ redhatID }}'
+        password: '{{ redhatPass }}'
+        validate_certs: no
+        name: '{{ newvm }}'
+        hardware:
+          memory_mb: 12288
+      delegate_to: localhost
 
     - name: Powering on appliance
       vmware_guest:
