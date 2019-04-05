@@ -22,7 +22,7 @@
         state: present
         cluster: Default
         name: "{{ newvm }}"
-        memory: 8GiB
+        memory: "{{ memorySize }}"
         cpu_cores: 2
         cpu_sockets: 2
         type: server
@@ -86,6 +86,18 @@
       shell: appliance_console_cli --internal --dbdisk /dev/vda --region 0 --password smartvm
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
       when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB'
+
+#    - name: Copy DB Import Script
+#     copy:
+#       src: importdb.sh
+#       dest: /tmp/importdb.sh
+#       mode: u+x
+#     delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+
+#    - name: Run DB Import Script
+#      shell: /tmp/importdb.sh
+#      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}' 
+
 
     - name: Starting EVM service manually
       shell: systemctl start evmserverd.service
