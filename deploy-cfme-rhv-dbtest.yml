@@ -89,7 +89,7 @@
 
     - name: Copy DB Import Script
       copy:
-        src: /var/lib/awx/importdb.sh
+        src: importdb.sh
         dest: /tmp/importdb.sh
         mode: u+x
         #      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
@@ -99,9 +99,9 @@
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}' 
 
 
-    - name: Starting EVM service manually
-      shell: systemctl start evmserverd.service
-      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      #    - name: Starting EVM service manually
+      #shell: systemctl start evmserverd.service
+      #delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
 
     - debug: 
         msg: "You should now be able to access your appliance via https://{{ IPInfo.nic.reported_devices[0].ips[0].address }} Please allow roughly 15 minutes for the service to fully come online."

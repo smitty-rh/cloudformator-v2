@@ -1,8 +1,8 @@
 ---
 - hosts: localhost
   tasks:
-    - name: Getting file
-      shell: "cp /builds/manageiq/{{ release }}/{{ version }}/manageiq-vsphere*.ova {{ version }}.ova"
+          #- name: Getting file
+          #shell: "cp /builds/manageiq/{{ release }}/{{ version }}/manageiq-vsphere*.ova {{ version }}.ova"
     - name: Locating File
       find:
         paths: "/builds/manageiq/{{ release }}/{{ version }}/"
