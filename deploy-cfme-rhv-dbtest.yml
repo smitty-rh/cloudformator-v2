@@ -92,7 +92,7 @@
         src: /var/lib/awx/importdb.sh
         dest: /tmp/importdb.sh
         mode: u+x
-      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+        #      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
 
     - name: Run DB Import Script
       shell: /tmp/importdb.sh
