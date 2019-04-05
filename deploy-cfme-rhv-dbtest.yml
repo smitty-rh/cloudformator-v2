@@ -93,15 +93,18 @@
         dest: /tmp/importdb.sh
         mode: u+x
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      when: '{{ setup_DB }}' == 'true'
 
     - name: Run DB Import Script
       shell: /tmp/importdb.sh
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}' 
+      when: '{{ setup_DB }}' == 'true'
 
 
-      #    - name: Starting EVM service manually
-      #shell: systemctl start evmserverd.service
-      #delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+    - name: Starting EVM service manually
+      shell: systemctl start evmserverd.service
+      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      when: '{{ setup_DB }}' != 'true'
 
     - debug: 
         msg: "You should now be able to access your appliance via https://{{ IPInfo.nic.reported_devices[0].ips[0].address }} Please allow roughly 15 minutes for the service to fully come online."
