@@ -80,20 +80,38 @@
     - name: Setting up DB on vdb
       shell: appliance_console_cli --internal --dbdisk /dev/vdb --region 0 --password smartvm
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
-      when: moreInfo.ansible_facts.ansible_devices.vda.size != '100.00 GB'
+      when: moreInfo.ansible_facts.ansible_devices.vda.size != '100.00 GB' and ystream != '5.10'
 
     - name: Setting up DB on vda
       shell: appliance_console_cli --internal --dbdisk /dev/vda --region 0 --password smartvm
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
-      when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB'
+      when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB' and ystream != '5.10'
 
-    - name: Copy DB Import Script
+    - name: Setting up DB on vdb (for 5.10)
+      shell: appliance_console_cli --internal --dbdisk /dev/vdb --region 10 --password smartvm
+      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      when: moreInfo.ansible_facts.ansible_devices.vda.size != '100.00 GB' and ystream == '5.10'
+
+    - name: Setting up DB on vda (for 5.10)
+      shell: appliance_console_cli --internal --dbdisk /dev/vda --region 10 --password smartvm
+      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB' and ystream == '5.10'
+
+    - name: Copy DB Import Script (for 5.9)
       copy:
-        src: importdb.sh
+        src: importdb46.sh
         dest: /tmp/importdb.sh
         mode: u+x
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
-      when: setup_DB == 'true'
+      when: setup_DB == 'true' and ystream == '5.9'
+
+    - name: Copy DB Import Script (for 5.10)
+      copy:
+        src: importdb47.sh
+        dest: /tmp/importdb.sh
+        mode: u+x
+      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      when: setup_DB == 'true' and ystream == '5.10'
 
     - name: Run DB Import Script
       shell: /tmp/importdb.sh
