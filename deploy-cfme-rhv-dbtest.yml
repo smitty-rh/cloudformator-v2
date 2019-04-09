@@ -97,13 +97,13 @@
       delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
       when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB' and ystream == '5.10'
 
-    - name: Copy DB Import Script (for 5.8)
-      copy:
-        src: importdb45.sh
-        dest: /tmp/importdb.sh
-        mode: u+x
-      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
-      when: setup_DB == 'true' and ystream == '5.8'
+      #    - name: Copy DB Import Script (for 5.8)
+      #      copy:
+      #        src: importdb45.sh
+      #        dest: /tmp/importdb.sh
+      #        mode: u+x
+      #      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
+      #      when: setup_DB == 'true' and ystream == '5.8'
 
     - name: Copy DB Import Script (for 5.9)
       copy:
