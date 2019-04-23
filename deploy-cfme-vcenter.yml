@@ -68,29 +68,33 @@
       register: moreInfo
       delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
 
-    - name: Setting up DB on vdb
-      shell: appliance_console_cli --internal --dbdisk /dev/vdb --region 0 --password "{{ cfme_password }}"
-      delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
-      when: moreInfo.ansible_facts.ansible_devices.vda.size != '100.00 GB' and ystream != '5.10'
-      ignore_errors: True
+    - name: Figure out which is the DB Disk
+      set_fact:
+        db_disk: "{{ item.key }}"
+      with_dict: "{{ ansible_devices }}"
+      when: item.value.size == '100.00 GB'
 
-    - name: Setting up DB on vda
-      shell: appliance_console_cli --internal --dbdisk /dev/vda --region 0 --password "{{ cfme_password }}"
+    - name: Setting up DB on '{{ db_disk }}'
+      shell: appliance_console_cli --internal --dbdisk /dev/"{{ db_disk }}" --region 0 --password "{{ cfme_password }}"
       delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
-      when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB' and ystream != '5.10'
-      ignore_errors: True
+      when: ystream != '5.10'
 
-    - name: Setting up DB on vdb (for 5.10)
-      shell: appliance_console_cli --internal --dbdisk /dev/vdb --region 10 --password "{{ cfme_password }}"
-      delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
-      when: moreInfo.ansible_facts.ansible_devices.sda.size != '100.00 GB' and ystream == '5.10'
-      ignore_errors: True
+      #    - name: Setting up DB on vda
+      #      shell: appliance_console_cli --internal --dbdisk /dev/vda --region 0 --password "{{ cfme_password }}"
+      #      delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
+      #      when: moreInfo.ansible_facts.ansible_devices.vdb.size != '100.00 GB' and ystream != '5.10'
+      #      ignore_errors: True
 
-    - name: Setting up DB on vda (for 5.10)
-      shell: appliance_console_cli --internal --dbdisk /dev/vda --region 10 --password "{{ cfme_password }}"
+    - name: Setting up DB on '{{ db_disk }} (for 5.10)
+      shell: appliance_console_cli --internal --dbdisk /dev/"{{ db_disk }}" --region 10 --password "{{ cfme_password }}"
       delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
-      when: moreInfo.ansible_facts.ansible_devices.sdb.size != '100.00 GB' and ystream == '5.10'
-      ignore_errors: True
+      when: ystream == '5.10'
+
+      #    - name: Setting up DB on vda (for 5.10)
+      #      shell: appliance_console_cli --internal --dbdisk /dev/vda --region 10 --password "{{ cfme_password }}"
+      #      delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
+      #      when: moreInfo.ansible_facts.ansible_devices.sdb.size != '100.00 GB' and ystream == '5.10'
+      #      ignore_errors: True
 
     - name: Copy DB Import Script (for 5.9)
       copy:
