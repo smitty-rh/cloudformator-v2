@@ -86,12 +86,12 @@
 
     - name: Setting up DB on '{{ db_disk }}'
       shell: appliance_console_cli --internal --dbdisk /dev/"{{ db_disk }}" --region 0 --password "{{ cfme_password }}"
-      delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
+      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
       when: ystream != '5.10'
 
     - name: Setting up DB on '{{ db_disk }} (for 5.10)
       shell: appliance_console_cli --internal --dbdisk /dev/"{{ db_disk }}" --region 10 --password "{{ cfme_password }}"
-      delegate_to: '{{ deployInfo.instance.hw_eth0.ipaddresses[0] }}'
+      delegate_to: '{{ IPInfo.nic.reported_devices[0].ips[0].address }}'
       when: ystream == '5.10'
 
       #    - name: Setting up DB on vdb
